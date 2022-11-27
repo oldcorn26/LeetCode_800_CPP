@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <forward_list>
 
 using namespace std;
