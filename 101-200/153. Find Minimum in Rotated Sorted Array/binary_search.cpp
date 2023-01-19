@@ -11,7 +11,7 @@ public:
 
         while (sta < end) {
             int mid{(sta + end) / 2};
-            if (nums[mid] > *(nums.end() - 1)) sta = mid + 1;
+            if (nums[mid] > nums[end]) sta = mid + 1;
             else end = mid;
         }
 
