@@ -7,21 +7,17 @@ class Solution {
 public:
     int candy(vector<int>& ratings) {
         int size = ratings.size();
-        int inc{1}, dec{0}, pre{1}, res{1};
+        vector<int> left(size, 1);
         for (int i{1}; i < size; ++i) {
-            if (ratings[i - 1] <= ratings[i]) {
-                dec = 0;
-                pre = ratings[i - 1] == ratings[i] ? 1 : pre + 1;
-                inc = pre;
-                res += pre;
-            } else {
-                ++dec;
-                if (dec == inc) ++dec;
-                res += dec;
-                pre = 1;
-            }
+            if (ratings[i] > ratings[i-1]) left[i] = left[i-1] + 1;
         }
-        return res;
+        int ret{max(1, left[size-1])}, pre{1};
+        for (int i{size - 2}; i >= 0; --i) {
+            int crt{ratings[i] > ratings[i+1] ? pre+1 : 1};
+            ret += max(crt, left[i]);
+            pre = crt;
+        }
+        return ret;
     }
 };
 
