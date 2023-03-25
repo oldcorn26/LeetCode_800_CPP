@@ -5,71 +5,29 @@ using namespace std;
 
 class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int size1 = nums1.size();
-        int size2 = nums2.size();
-        if (size1 > size2) return findMedianSortedArrays(nums2, nums1);
-        int pivot1, pivot2;
-        int flag1 = -1;
-        int flag2 = -1;
-        int mode = (size1 + size2) % 2;
-        int deleteNum = (size1 + size2) / 2 - !mode;
+    double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+        int m = nums1.size(), n = nums2.size();
+        if (m > n) return findMedianSortedArrays(nums2, nums1);
 
-        if (!size1) {
-            if (mode) return nums2[size2 / 2];
-            else return (double) (nums2[size2 / 2 - 1] + nums2[size2 / 2]) / 2.0;
+        int deleteNum{(m + n + 1) / 2};
+        if (deleteNum == 0) return 0;
+        if (m == 0) return n%2 ? nums2[deleteNum-1] : (nums2[deleteNum-1]+nums2[deleteNum])*0.5;
+        int sta{}, end{m - 1};
+        while (sta < end) {
+            int idx1{(sta + end + 1) / 2};
+            int idx2{deleteNum - idx1 - 2};
+            int L1{nums1[idx1]};
+            int R2{nums2[idx2+1]};
+            if (L1 > R2) end = idx1 - 1;
+            else sta = idx1;
         }
-
-        while (deleteNum > 0) {
-            if (flag1 == size1 - 1) {
-                flag2 += deleteNum;
-                break;
-            }
-            pivot1 = flag1 + (deleteNum + 1) / 2 < size1 ? flag1 + (deleteNum + 1) / 2 : size1 - 1;
-            pivot2 = deleteNum == 1 ? flag2 + 1 : flag2 + deleteNum - pivot1 + flag1;
-
-            if (nums1[pivot1] > nums2[pivot2]) {
-                deleteNum -= pivot2 - flag2;
-                flag2 = pivot2;
-            } else {
-                deleteNum -= pivot1 - flag1;
-                flag1 = pivot1;
-            }
-        }
-
-        if (mode) {
-            if (flag1 < size1 - 1) {
-                return (double) nums1[flag1 + 1] < nums2[flag2 + 1] ? nums1[flag1 + 1] : nums2[flag2 + 1];
-            } else {
-                return (double) nums2[flag2 + 1];
-            }
-        } else {
-            double result = 0;
-            size1 = size1 - flag1 - 1;
-            size2 = size2 - flag2 - 1;
-            for (int i = 0; i < 2; ++i) {
-                if (size1 && size2) {
-                    if (nums1[flag1 + 1] < nums2[flag2 + 1]) {
-                        result += nums1[flag1 + 1];
-                        --size1;
-                        ++flag1;
-                    } else {
-                        result += nums2[flag2 + 1];
-                        --size2;
-                        ++flag2;
-                    }
-                } else if (!size1) {
-                    result += nums2[flag2 + 1];
-                    --size2;
-                    ++flag2;
-                } else {
-                    result += nums1[flag1 + 1];
-                    --size1;
-                    ++flag1;
-                }
-            }
-            return result / 2.0;
-        }
+        int idx2{deleteNum - sta - 2};
+        if (sta == 0 && nums1[0] > nums2[idx2+1])
+            sta--, idx2++;
+        int LMax{max(sta >= 0 ? nums1[sta] : INT32_MIN, idx2 >= 0 ? nums2[idx2] : INT32_MIN)};
+        int RMin{min(sta+1 == m ? INT32_MAX : nums1[sta+1], idx2+1 == n ? INT32_MAX : nums2[idx2+1])};
+        if ((m+n) % 2) return LMax;
+        else return (LMax+RMin) * 0.5;
     }
 };
 
