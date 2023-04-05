@@ -14,25 +14,27 @@ struct ListNode {
 };
 
 class Solution {
-private:
-    ListNode *ctr;
-    char flag = 0;
+    ListNode *crtHead;
+    bool state{};
+    bool ret{true};
 public:
     bool isPalindrome(ListNode* head) {
-        ctr = head;
-
-        return checkIfPalindrome(head) == -1;
+        crtHead = head;
+        check(head);
+        return ret;
     }
 
-    int checkIfPalindrome(ListNode *head) {
-        if (!head) return -1;
-
-        int &&temp = checkIfPalindrome(head->next);
-        if (temp == -1 && (head == ctr || head->next == ctr)) flag = 1;
-        if (flag || (temp == -1 && head->val == ctr->val)) {
-            ctr = ctr->next;
-            return -1;
-        } else return -2;
+    void check(ListNode *tail) {
+        if (!state) {
+            if (!tail) {
+                state = true;
+                return;
+            }
+            check(tail->next);
+        }
+        if (crtHead->val != tail->val)
+            ret = false;
+        crtHead = crtHead->next;
     }
 };
 
