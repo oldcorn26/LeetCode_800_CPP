@@ -14,58 +14,17 @@ struct ListNode {
 class Solution {
 public:
     ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-        ListNode *l;
+        return helper(l1, l2, 0);
+    }
 
-        if (l1 == nullptr && l2 == nullptr) {
+    ListNode *helper(ListNode *l1, ListNode *l2, int carr) {
+        if (!l1 && !l2 && !carr)
             return nullptr;
-        } else if (l1 == nullptr) {
-
-            if (l2->val > 9) {
-                l = new ListNode(l2->val - 10);
-
-                if (l2->next == nullptr) {
-                    l2->next = new ListNode(1);
-                } else {
-                    l2->next->val++;
-                }
-
-                l->next = addTwoNumbers(nullptr, l2->next);
-            } else {
-                l = new ListNode(l2->val);
-                l->next = addTwoNumbers(nullptr, l2->next);
-            }
-
-        } else if (l2 == nullptr) {
-
-            if (l1->val > 9) {
-                l = new ListNode(l1->val - 10);
-
-                if (l1->next == nullptr) {
-                    l1->next = new ListNode(1);
-                } else {
-                    l1->next->val++;
-                }
-                l->next = addTwoNumbers(l1->next, nullptr);
-            } else {
-                l = new ListNode(l1->val);
-                l->next = addTwoNumbers(l1->next, nullptr);
-            }
-
-        } else {
-            int temp = (l1->val + l2->val) / 10;
-            l = new ListNode((l1->val + l2->val) - temp * 10);
-
-            if (temp > 0) {
-                if (l1->next == nullptr) {
-                    l1->next = new ListNode(temp);
-                } else {
-                    l1->next->val += temp;
-                }
-            }
-
-            l->next = addTwoNumbers(l1->next, l2->next);
-        }
-        return l;
+        int n1{l1 ? l1->val : 0};
+        int n2{l2 ? l2->val : 0};
+        ListNode *ret{new ListNode((n1 + n2 + carr) % 10)};
+        ret->next = helper(l1 ? l1->next : nullptr, l2 ? l2->next : nullptr, (n1 + n2 + carr) / 10);
+        return ret;
     }
 };
 
