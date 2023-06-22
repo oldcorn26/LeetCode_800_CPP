@@ -6,34 +6,31 @@
 using namespace std;
 
 class Solution {
+private:
+    vector<vector<int>> ret;
 public:
-    vector<vector<int>> combinationSum(vector<int> &candidates, int target) {
-        stack<int> tree;
-        vector<vector<int>> result;
-        int &&index = candidates.size() - 1;
-
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
         sort(candidates.begin(), candidates.end());
-        while (index >= 0 && candidates[index] > target) index--;
-        if (index < 0) return {};
-
-        dfs(tree, move(target), move(index), candidates, result);
-        return result;
+        vector<int> count(candidates.size());
+        dfs(candidates, 0, count, target);
+        return ret;
     }
 
-    void dfs(stack<int> &tree, int &&tar, int &&idx, const vector<int> &candi, vector<vector<int>> &res) {
-        if (tar < 0) return;
-        else if (!tar) {
-            stack<int> temp(tree);
-            vector<int> element(temp.size());
-            for (int &i : element) {i = temp.top(); temp.pop();}
-            res.push_back(element);
+    void dfs(vector<int> &candi, int candiIdx, vector<int> &count, int tar) {
+        if (tar == 0) {
+            vector<int> valid;
+            for (int i{}; i < candi.size(); ++i) {
+                if (count[i] == 0)
+                    continue;
+                std::fill_n(std::back_inserter(valid), count[i], candi[i]);
+            }
+            ret.push_back(valid);
             return;
         }
-
-        for (int i = idx; i >= 0; i--) {
-            tree.push(candi[i]);
-            dfs(tree, tar - candi[i], move(i), candi, res);
-            tree.pop();
+        for (int i{candiIdx}; i < candi.size() && candi[i] <= tar; ++i) {
+            count[i]++;
+            dfs(candi, i, count, tar - candi[i]);
+            count[i]--;
         }
     }
 };
