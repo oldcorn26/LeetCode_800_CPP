@@ -4,25 +4,27 @@
 using namespace std;
 
 class Solution {
+private:
+    int finalState;
+    vector<vector<int>> ret;
 public:
     vector<vector<int>> permute(vector<int>& nums) {
-        vector<vector<int>> res;
-        vector<int> per(nums.size(), 11);
-        dfs(per, 0, nums, res);
-        return res;
+        vector<int> crt(nums.size());
+        finalState = (1 << nums.size()) - 1;
+        dfs(nums, crt, 0, 0);
+        return ret;
     }
 
-    void dfs(vector<int> &per, int &&idx, vector<int> &nums, vector<vector<int>> &res) {
-        if (idx == nums.size()) {
-            res.push_back(per);
+    void dfs(vector<int> &nums, vector<int> &crt, int crtIdx, int state) {
+        if (state == finalState) {
+            ret.push_back(crt);
             return;
         }
-        for (int i = 0; i < nums.size(); i++) {
-            if (nums[i] < 11) {
-                per[idx] = nums[i]; nums[i] = 11;
-                dfs(per, idx + 1, nums, res);
-                nums[i] = per[idx]; per[idx] = 11;
-            }
+        for (int i{}; i < nums.size(); ++i) {
+            if ((1 << i) & state)
+                continue;
+            crt[crtIdx] = nums[i];
+            dfs(nums, crt, crtIdx + 1, state | (1 << i));
         }
     }
 };
