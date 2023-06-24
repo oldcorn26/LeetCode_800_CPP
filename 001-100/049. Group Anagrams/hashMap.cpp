@@ -7,24 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> groupAnagrams(vector<string> &strs) {
-        if (strs.size() <= 1) return {strs};
-
-        unordered_map<string, int> hashmap;
-        vector<vector<string>> res;
-
-        for (string &s: strs) {
-            string temp = s;
-            sort(temp.begin(), temp.end());
-
-            if (hashmap.find(temp) == hashmap.end()) {
-                hashmap[temp] = hashmap.size();
-                res.push_back(vector<string>{});
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>> ret;
+        unordered_map<string, int> map;
+        for (int i{}; i < strs.size(); ++i) {
+            string str{strs[i]};
+            sort(str.begin(), str.end());
+            if (map.find(str) == map.end()) {
+                ret.push_back({strs[i]});
+                map[str] = ret.size() - 1;
+            } else {
+                ret[map[str]].push_back(strs[i]);
             }
-            res[hashmap[temp]].push_back(s);
         }
-
-        return res;
+        return ret;
     }
 };
 
