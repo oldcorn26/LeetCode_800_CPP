@@ -6,15 +6,10 @@ using namespace std;
 class Solution {
 public:
     bool canJump(vector<int>& nums) {
-        if (nums.size() == 1) return true;
-
-        int maxFlag = 0;
-        for (int i = 0; i < nums.size() - 1; ++i) {
-            if (i > maxFlag) return false;
-            maxFlag = i + nums[i] > maxFlag ? i + nums[i] : maxFlag;
-            if (maxFlag >= nums.size() - 1) return true;
-        }
-        return false;
+        int farIdx{};
+        for (int i{}; i < nums.size() && i <= farIdx; ++i)
+            farIdx = max(farIdx, i+nums[i]);
+        return farIdx+1 >= nums.size();
     }
 };
 
