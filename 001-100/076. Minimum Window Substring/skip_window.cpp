@@ -6,33 +6,34 @@ using namespace std;
 class Solution {
 public:
     string minWindow(string s, string t) {
-        int sLen = s.size();
-        if (sLen < t.size()) return "";
-
-        int i = 0, j = -1;
-        int headIdx, minLen = INT32_MAX;
-        unordered_map<char, int> map;
-        for (char &c : t) ++map[c];
-        int uncheckedNum = map.size();
-
-        while (uncheckedNum) {
-            while (uncheckedNum && j + 1 < sLen) {
-                if (map.find(s[++j]) != map.end() && !--map[s[j]]) --uncheckedNum;
+        int left{}, right{};
+        int validNum{};
+        int minLen{INT32_MAX}, minIdx{};
+        unordered_map<char, int> tCount;
+        unordered_map<char, int> winCount;
+        for (char ch: t)
+            tCount[ch]++;
+        while (right < s.size()) {
+            while (validNum < tCount.size() && right < s.size()) {
+                if (tCount.find(s[right]) != tCount.end())
+                    if (++winCount[s[right]] == tCount[s[right]])
+                        validNum++;
+                right++;
             }
-            while (i <= j) {
-                if (map.find(s[i]) != map.end())
-                    if (map[s[i]]) ++map[s[i]];
-                    else break;
-                ++i;
+            if (validNum != tCount.size())
+                break;
+            while (left < right && validNum == tCount.size()) {
+                if (tCount.find(s[left]) != tCount.end())
+                    if (winCount[s[left]]-- == tCount[s[left]])
+                        validNum--;
+                left++;
             }
-            if (!uncheckedNum) {if (minLen > j - i + 1) {headIdx = i; minLen = j - i + 1;}}
-            else if (minLen == INT32_MAX) return "";
-            else break;
-
-            if (++i <= j) {++map[s[i - 1]]; ++uncheckedNum;}
+            if (validNum < tCount.size() && minLen > right-left+1) {
+                minLen = right-left+1;
+                minIdx = left-1;
+            }
         }
-
-        return s.substr(headIdx, minLen);
+        return minLen != INT32_MAX ? s.substr(minIdx, minLen) : "";
     }
 };
 
