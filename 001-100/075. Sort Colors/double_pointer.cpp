@@ -5,11 +5,16 @@ using namespace std;
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
-        int i = 0, &&j = nums.size() - 1;
-
-        for (int k = i; k <= j; ++k) {
-            if (!nums[k]) {nums[k] = nums[i]; nums[i++] = 0;}
-            else if (nums[k] == 2) {nums[k] = nums[j]; nums[j--] = 2; --k;}
+        int zeroIdx = 0, twoIdx = nums.size() - 1;
+        for (int i{zeroIdx}; i <= twoIdx; ++i) {
+            if (nums[i] == 0) {
+                swap(nums[i], nums[zeroIdx]);
+                zeroIdx++;
+            } else if (nums[i] == 2) {
+                swap(nums[i], nums[twoIdx]);
+                twoIdx--;
+                i--;
+            }
         }
     }
 };
