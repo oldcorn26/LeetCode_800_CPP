@@ -7,23 +7,21 @@ using namespace std;
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        int max = 0;
-        stack<int> monStack;
-        vector<int> heights1(heights.size() + 2);
-        monStack.push(0);
-        for (int i = 0; i < heights.size(); ++i) heights1[i + 1] = heights[i];
-
-        for (int i = 1; i < heights1.size(); ++i) {
-            while (heights1[monStack.top()] > heights1[i]) {
-                int &top = monStack.top();
-                monStack.pop();
-                int &&temp = heights1[top] * (i - monStack.top() - 1);
-                max = temp > max ? temp : max;
+        int idx{1};
+        int maxArea{};
+        stack<int> s{{0}};
+        heights.insert(heights.begin(), 0);
+        heights.push_back(0);
+        while (idx < heights.size()) {
+            while (heights[s.top()] > heights[idx]) {
+                int h{heights[s.top()]};
+                s.pop();
+                maxArea = max(maxArea, h * (idx - s.top() - 1));
             }
-            monStack.push(i);
+            s.push(idx);
+            idx++;
         }
-
-        return max;
+        return maxArea;
     }
 };
 
