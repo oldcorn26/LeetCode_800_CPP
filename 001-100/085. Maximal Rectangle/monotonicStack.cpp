@@ -1,47 +1,38 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
     int maximalRectangle(vector<vector<char>>& matrix) {
-        int max = 0;
-        int height = matrix.size(), width = matrix[0].size();
-
-        vector<int> dp(width, -1);
-        vector<int> heights(width + 2);
-
-        for (int i = 0; i < height + 1; ++i) {
-            for (int j = 0; j < width; ++j) {
-                heights[j + 1] = i - dp[j] - 1;
-                if (i < height && matrix[i][j] == '0') dp[j] = i;
-            }
-            int &&temp = largestRectangleArea(heights);
-            max = temp > max ? temp : max;
+        int m = matrix.size(), n = matrix[0].size();
+        int maxArea{};
+        vector<int> dp(n+2);
+        for (int i{}; i < m; ++i) {
+            for (int j{}; j < n; ++j)
+                dp[j+1] = matrix[i][j] == '0' ? 0 : dp[j+1] + 1;
+            maxArea = max(maxArea, monoStack(dp));
         }
-
-        return max;
+        return maxArea;
     }
 
-    int largestRectangleArea(vector<int> &heights) {
-        int max = 0, size = heights.size();
-        stack<int> monStack;
-        monStack.push(0);
-
-        for (int i = 1; i < size; ++i) {
-
-            while (heights[monStack.top()] > heights[i]) {
-                int &top = monStack.top();
-                monStack.pop();
-                int &&temp = heights[top] * (i - monStack.top() - 1);
-                max = temp > max ? temp : max;
+    int monoStack(vector<int> &nums) {
+        int idx{1};
+        int maxArea{};
+        stack<int> s{{0}};
+        while (idx < nums.size()) {
+            while (nums[s.top()] > nums[idx]) {
+                int h{nums[s.top()]};
+                s.pop();
+                maxArea = max(maxArea, h * (idx - s.top() - 1));
             }
-
-            monStack.push(i);
+            s.push(idx);
+            idx++;
         }
-        return max;
+        return maxArea;
     }
 };
 
