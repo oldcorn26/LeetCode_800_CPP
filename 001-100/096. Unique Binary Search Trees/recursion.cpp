@@ -1,21 +1,21 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 class Solution {
+private:
+    vector<int> memo{1, 1};
 public:
     int numTrees(int n) {
-        if (!n || n == 1) return 1;
-        else if (n == 2) return 2;
-        else if (n == 3) return 5;
-
-        int res = 0;
-        for (int i = 0; i < n / 2; ++i) {
-            res += numTrees(i) * numTrees(n - i  - 1);
+        if (n < memo.size())
+            return memo[n];
+        int ret{};
+        for (int i{}; i < n; ++i) {
+            ret += numTrees(i) * numTrees(n - i - 1);
         }
-
-        if (n % 2) {int &&temp = numTrees(n / 2); return res * 2 + temp * temp;}
-        else return res * 2;
+        memo.push_back(ret);
+        return ret;
     }
 };
 
