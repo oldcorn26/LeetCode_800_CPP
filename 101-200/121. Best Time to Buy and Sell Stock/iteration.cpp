@@ -1,19 +1,19 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
-        int min= prices[0], size = prices.size(), res = 0;
-
-        for (int i = 0; i < size; ++i) {
-            min = prices[i] < min ? prices[i] : min;
-            res = prices[i] - min > res? prices[i] - min : res;
+        int maxPft{};
+        int minPrice{prices[0]};
+        for (int &i: prices) {
+            maxPft = max(maxPft, i - minPrice);
+            minPrice = min(minPrice, i);
         }
-
-        return res;
+        return maxPft;
     }
 };
 
