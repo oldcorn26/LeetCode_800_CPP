@@ -1,21 +1,25 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 using namespace std;
 
 class Solution {
 public:
-    int longestConsecutive(vector<int>& nums) {
-        int size = nums.size();
-        if (size < 2) return size;
-        sort(nums.begin(), nums.end());
-
-        int maxLen = 1, idx = 0, repeatedNum = 0;
-        for (int i = 1; i < size; ++i) {
-            if (nums[i] == nums[i - 1] + 1) maxLen = i - idx - repeatedNum + 1 > maxLen ? i - idx - repeatedNum + 1 : maxLen;
-            else nums[i] == nums[i - 1] ? ++repeatedNum : (idx = i, repeatedNum = 0);
+    int longestConsecutive(vector<int> &nums) {
+        int maxLen{};
+        unordered_map<int, int> edge;
+        for (int i: nums) {
+            if (edge.find(i) != edge.end())
+                continue;
+            int left = edge.find(i-1) != edge.end() ? edge[i-1] : 0;
+            int right = edge.find(i+1) != edge.end() ? edge[i+1] : 0;
+            int len{left + right + 1};
+            edge[i] = -1;
+            edge[i-left] = len;
+            edge[i+right] = len;
+            maxLen = max(maxLen, len);
         }
-
         return maxLen;
     }
 };
