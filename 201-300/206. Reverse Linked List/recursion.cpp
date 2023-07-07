@@ -14,20 +14,14 @@ struct ListNode {
 };
 
 class Solution {
-private:
-    ListNode *res;
 public:
     ListNode* reverseList(ListNode* head) {
-        if (!head) return nullptr;
-
-        reverseListHelper(head)->next = nullptr;
-        return res;
-    }
-
-    ListNode * reverseListHelper(ListNode *head) {
-        if (!head->next) res = head;
-        else reverseListHelper(head->next)->next = head;
-        return head;
+        if (!head || !head->next)
+            return head;
+        ListNode *newHead{reverseList(head->next)};
+        head->next->next = head;
+        head->next = nullptr;
+        return newHead;
     }
 };
 
