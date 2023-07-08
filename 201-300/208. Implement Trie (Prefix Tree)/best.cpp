@@ -1,43 +1,46 @@
 #include <iostream>
-#include <cstring>
+#include <vector>
 
 using namespace std;
 
 class Trie {
-private:
-    bool isEnd;
-    Trie *next[26];
 public:
-    Trie() : isEnd(false) {
-        memset(next, 0, sizeof(next));
+    Trie() {
+        next.resize(26);
     }
 
     void insert(string word) {
-        Trie *temp = this;
-        for (char &ch: word) {
-            if (!temp->next[ch - 'a']) temp->next[ch - 'a'] = new Trie();
+        Trie *temp{this};
+        for (char ch: word) {
+            if (!temp->next[ch - 'a'])
+                temp->next[ch - 'a'] = new Trie();
             temp = temp->next[ch - 'a'];
         }
         temp->isEnd = true;
     }
 
     bool search(string word) {
-        Trie *temp = this;
-        for (char &ch: word) {
-            if (!temp->next[ch - 'a']) return false;
+        Trie *temp{this};
+        for (char ch: word) {
+            if (!temp->next[ch - 'a'])
+                return false;
             temp = temp->next[ch - 'a'];
         }
         return temp->isEnd;
     }
 
     bool startsWith(string prefix) {
-        Trie *temp = this;
-        for (char &ch: prefix) {
-            if (!temp->next[ch - 'a']) return false;
+        Trie *temp{this};
+        for (char ch: prefix) {
+            if (!temp->next[ch - 'a'])
+                return false;
             temp = temp->next[ch - 'a'];
         }
         return true;
     }
+private:
+    bool isEnd{};
+    vector<Trie*> next;
 };
 
 int main() {
