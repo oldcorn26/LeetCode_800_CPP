@@ -14,27 +14,21 @@ struct ListNode {
 };
 
 class Solution {
+private:
     ListNode *crtHead;
-    bool state{};
-    bool ret{true};
 public:
     bool isPalindrome(ListNode* head) {
         crtHead = head;
-        check(head);
-        return ret;
+        return check(head);
     }
 
-    void check(ListNode *tail) {
-        if (!state) {
-            if (!tail) {
-                state = true;
-                return;
-            }
-            check(tail->next);
-        }
-        if (crtHead->val != tail->val)
-            ret = false;
+    bool check(ListNode *head) {
+        if (!head)
+            return true;
+        if (!check(head->next) || crtHead->val != head->val)
+            return false;
         crtHead = crtHead->next;
+        return true;
     }
 };
 
