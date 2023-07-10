@@ -1,6 +1,6 @@
 #include <iostream>
-#include <deque>
-#include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -13,36 +13,33 @@ struct TreeNode {
 };
 
 class Solution {
-private:
-    vector<char> left, right;
-    char recursionFlag = 0;
+    unordered_map<int, TreeNode*> fatherMap;
+    unordered_set<TreeNode*> vis;
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        deque<char> deque1;
-        traversal(deque1, root, p, q);
-
-        int flag = 0, leftNum = left.size(), rightNum = right.size();
-        TreeNode *res = root;
-        while (flag < leftNum && flag < rightNum && left[flag] == right[flag]) {
-            if (left[flag] == '0') res = res->left;
-            else res = res->right;
-            ++flag;
+        int pVal{p->val};
+        dfs(root);
+        vis.emplace(p);
+        while (fatherMap.find(pVal) != fatherMap.end()) {
+            vis.emplace(fatherMap[pVal]);
+            pVal = fatherMap[pVal]->val;
         }
-
-        return res;
+        while (vis.find(q) == vis.end())
+            q = fatherMap[q->val];
+        return q;
     }
 
-    void traversal(deque<char> &deq, TreeNode *root, TreeNode *p, TreeNode *q) {
-        if (!root) return;
-
-        if (root == p) {left = {deq.begin(), deq.end()}; ++recursionFlag;}
-        if (root == q) {right = {deq.begin(), deq.end()}; ++recursionFlag;}
-
-        deq.push_back('0');
-        if (recursionFlag != 2) traversal(deq, root->left, p, q);
-        deq.pop_back(), deq.push_back('1');
-        if (recursionFlag != 2) traversal(deq, root->right, p, q);
-        deq.pop_back();
+    void dfs(TreeNode *root) {
+        if (!root)
+            return;
+        if (root->left){
+            fatherMap[root->left->val] = root;
+            dfs(root->left);
+        }
+        if (root->right) {
+            fatherMap[root->right->val] = root;
+            dfs(root->right);
+        }
     }
 };
 
