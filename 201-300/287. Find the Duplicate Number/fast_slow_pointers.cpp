@@ -6,19 +6,17 @@ using namespace std;
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
-        int fast = 0, slow = 0;
-
-        do {
+        int slow{nums[0]}, fast{nums[nums[0]]};
+        while (slow != fast) {
+            slow = nums[slow];
             fast = nums[nums[fast]];
-            slow = nums[slow];
-        } while (fast != slow);
-        slow = 0;
-        while (fast != slow) {
-            fast = nums[fast];
-            slow = nums[slow];
         }
-
-        return fast;
+        fast = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
     }
 };
 
