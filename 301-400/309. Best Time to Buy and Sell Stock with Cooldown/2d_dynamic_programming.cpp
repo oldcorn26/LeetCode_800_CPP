@@ -1,21 +1,21 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
-    int maxProfit(vector<int> &prices) {
-        int &&size = prices.size();
-        int dp[3]{-prices[0], 0, 0};
-
-        for (int i = 1; i < size; ++i) {
-            int temp0 = dp[0], temp2 = dp[2];
-            dp[0] = max(temp2 - prices[i], temp0);
-            dp[2] = dp[1] > temp2 ? dp[1] : temp2;
-            dp[1] = temp0 + prices[i];
+    int maxProfit(vector<int>& prices) {
+        int size = prices.size();
+        vector<int> dp{0, -prices[0], 0};
+        for (int i{}; i < size; ++i) {
+            vector<int> backup{dp};
+            dp[0] = max(backup[0], backup[2]);
+            dp[1] = max(backup[1], backup[0] - prices[i]);
+            dp[2] = max(backup[0], dp[1] + prices[i]);
         }
-        return dp[1] > dp[2] ? dp[1] : dp[2];
+        return max(dp[0], max(dp[1], dp[2]));
     }
 };
 
