@@ -1,27 +1,31 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
+private:
+    int size;
+    vector<vector<int>> dp;
 public:
-    int maxCoins(vector<int> &nums) {
-        int &&dpSize = nums.size() + 2;
-        int dp[dpSize][dpSize];
-        for (int interval{1}; interval < dpSize; ++interval) {
-            for (int i{0}; i + interval < dpSize; ++i) {
-                int &&j{i + interval}, sidePro;
-                if (i == 0) sidePro = j + 1 < dpSize ? nums[j - 1] : 1;
-                else if (j == dpSize - 1) sidePro = nums[i - 1];
-                else sidePro = nums[i - 1] * nums[j - 1];
-                dp[i][j] = 0;
-                for (int &&k{i + 1}; k < j; ++k) {
-                    int &&crtNum{nums[k - 1] * sidePro};
-                    dp[i][j] = max(dp[i][j], crtNum + dp[i][k] + dp[k][j]);
-                }
-            }
+    int maxCoins(vector<int>& nums) {
+        size = nums.size();
+        dp = vector<vector<int>>(size+2, vector<int>(size+2, -1));
+        return helper(nums, -1, size);
+    }
+
+    int helper(vector<int> &nums, int sta, int end) {
+        if (sta+1 >= end)
+            return 0;
+        if (dp[sta+1][end+1] >= 0)
+            return dp[sta+1][end+1];
+        int ret{};
+        int mul{(sta >= 0 ? nums[sta] : 1) * (end < size ? nums[end] : 1)};
+        for (int i{sta+1}; i < end; ++i) {
+            ret = max(ret, mul * nums[i] + helper(nums, sta, i) + helper(nums, i, end));
         }
-        return dp[0][dpSize - 1];
+        return dp[sta+1][end+1] = ret;
     }
 };
 
