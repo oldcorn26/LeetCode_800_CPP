@@ -1,30 +1,26 @@
 #include <iostream>
 #include <vector>
-#include <map>
-#include <set>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
     vector<vector<int>> reconstructQueue(vector<vector<int>> &people) {
-        map<int, set<int>> sortedH;
-        vector<vector<int>> res(people.size());
-        for (vector<int> &vec: people) {
-            sortedH[vec[0]].emplace(vec[1]);
-        }
-        for (auto iter = sortedH.begin(); iter != sortedH.end(); ++iter) {
-            int unfilledNum = -1, i = -1;
-            for (const int &idx: iter->second) {
-                while (unfilledNum != idx) {
-                    if (res[i + 1].empty()) ++unfilledNum;
-                    ++i;
+        vector<vector<int>> ret(people.size());
+        sort(people.begin(), people.end());
+        for (auto &vec: people) {
+            int emptyNum{};
+            for (int i{}; i < ret.size(); ++i) {
+                if (ret[i].empty() && emptyNum >= vec[1]) {
+                    ret[i] = std::move(vec);
+                    break;
+                } else if (ret[i].empty() || ret[i][0] == vec[0]) {
+                    emptyNum++;
                 }
-                res[i].resize(2);
-                res[i][0] = iter->first, res[i][1] = idx;
             }
         }
-        return res;
+        return ret;
     }
 };
 
