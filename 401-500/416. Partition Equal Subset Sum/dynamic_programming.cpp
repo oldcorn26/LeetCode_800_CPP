@@ -6,21 +6,26 @@ using namespace std;
 class Solution {
 public:
     bool canPartition(vector<int>& nums) {
-        int sum{0};
-        for (int &i: nums) sum += i;
-        if (sum % 2) return false;
-        int &&halfSum{sum / 2};
-        vector<char> dp(halfSum + 1, 0);
-        dp[0] = 1;
-        for (int &i: nums) {
-            vector<char> tempDP{dp};
-            for (int j = 0; j <= halfSum; ++j) {
-                if (!tempDP[j]) continue;
-                int &&tempSum{j + i};
-                if (tempSum == halfSum) return true;
-                else if (tempSum < halfSum) dp[tempSum] = 1;
-                else break;
+        int halfSum{};
+        for (int i: nums)
+            halfSum += i;
+        if (halfSum % 2)
+            return false;
+        else
+            halfSum /= 2;
+        vector<bool> dp(halfSum+1);
+        dp[0] = true;
+        for (int num: nums) {
+            if (num > halfSum)
+                return false;
+            vector<bool> backup{dp};
+            for (int j{}; j <= halfSum; ++j) {
+                if (!backup[j] || num+j > halfSum)
+                    continue;
+                dp[num+j] = true;
             }
+            if (dp[halfSum])
+                return true;
         }
         return false;
     }
