@@ -17,26 +17,26 @@ struct TreeNode {
 
 class Solution {
 private:
-    int res = 0;
+    int ret{};
 public:
-    int pathSum(TreeNode *root, int targetSum) {
-        vector<long> candidates(1, targetSum);
-        pathSumHelper(root, candidates, targetSum);
-        return res;
+    int pathSum(TreeNode* root, int targetSum) {
+        vector<long long> prefix(1001);
+        dfs(root, prefix, 1, targetSum);
+        return ret;
     }
 
-    void pathSumHelper(TreeNode *root, vector<long> &candi, int &tar) {
-        if (!root) return;
-
-        int size = candi.size();
-        vector<long> nextCandi(size + 1);
-        for (int i = 0; i < size; ++i) {
-            if (candi[i] == root->val) ++res;
-            nextCandi[i] = candi[i] - root->val;
+    void dfs(TreeNode *root, vector<long long> &prefix, int idx, int target) {
+        if (!root) {
+            return;
         }
-        nextCandi[size] = tar;
-        pathSumHelper(root->left, nextCandi, tar);
-        pathSumHelper(root->right, nextCandi, tar);
+        prefix[idx] = prefix[idx-1] + root->val;
+        for (int i{}; i < idx; ++i) {
+            if (prefix[idx] - prefix[i] == target) {
+                ret++;
+            }
+        }
+        dfs(root->left, prefix, idx+1, target);
+        dfs(root->right, prefix, idx+1, target);
     }
 };
 
