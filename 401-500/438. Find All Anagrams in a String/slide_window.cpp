@@ -1,42 +1,46 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-        char elementNum{0};
-        int i{0}, j{-1};
-        vector<int> res;
-        vector<int> countMap(26);
-        for (char &ch: p) {
-            if (++countMap[ch - 'a'] == 1) {
-                ++elementNum;
-                countMap[ch - 'a'] = 2;
+        if (p.size() > s.size()) {
+            return {};
+        }
+        int validNum{}, pNum{};
+        vector<int> pMap(26), sMap(26);
+        vector<int> ret;
+        for (char ch: p) {
+            if (++pMap[ch - 'a'] == 1) {
+                pNum++;
             }
         }
-        char flag{elementNum};
-        vector<int> sw{countMap};
-
-        while (j + 1 < s.size()) {
-            while (j + 1 < s.size() && j + 1 != i + p.size()) {
-                int &iter = sw[s[++j] - 'a'];
-                if (iter != 0) {
-                    if (iter == 1) {
-                        while (s[i++] != s[j]) if (++sw[s[i - 1] - 'a'] == 2) ++flag;
-                        continue;
-                    } else if (--iter == 1) --flag;
-                } else {
-                    flag = elementNum;
-                    for (int idx = 0; idx < 26; ++idx) sw[idx] = countMap[idx];
-                    i = j + 1;
-                }
+        for (int i{}; i < p.size(); ++i) {
+            int sIdx = s[i] - 'a';
+            if (++sMap[sIdx] == pMap[sIdx]) {
+                validNum++;
             }
-            if (!flag) res.emplace_back(i);
-            if (i + 1 < s.size() && ++sw[s[i++] - 'a'] == 2) ++flag;
         }
-        return res;
+        if (validNum == pNum) {
+            ret.emplace_back(0);
+        }
+        for (int i = p.size(); i < s.size(); ++i) {
+            int rIdx = s[i] - 'a';
+            int lIdx = s[i-p.size()] - 'a';
+            if (++sMap[rIdx] == pMap[rIdx]) {
+                validNum++;
+            }
+            if (sMap[lIdx]-- == pMap[lIdx]) {
+                validNum--;
+            }
+            if (validNum == pNum) {
+                ret.emplace_back(i - p.size() + 1);
+            }
+        }
+        return ret;
     }
 };
 
