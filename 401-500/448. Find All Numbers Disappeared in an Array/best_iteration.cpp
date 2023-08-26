@@ -7,15 +7,16 @@ class Solution {
 public:
     vector<int> findDisappearedNumbers(vector<int>& nums) {
         int size = nums.size();
-        for (int &num: nums) {
-            int &&x = (num - 1) % size;
-            nums[x] += size;
+        vector<int> ret;
+        for (int num: nums) {
+            nums[(num-1) % size] += size;
         }
-        vector<int> res;
-        for (int i = 0; i < size; i++) {
-            if (nums[i] <= size) res.emplace_back(i + 1);
+        for (int i{}; i < size; ++i) {
+            if (nums[i] <= size) {
+                ret.emplace_back(i + 1);
+            }
         }
-        return res;
+        return ret;
     }
 };
 
