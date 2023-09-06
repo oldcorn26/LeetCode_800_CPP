@@ -1,28 +1,24 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
 class Solution {
 public:
-    int findTargetSumWays(vector<int> &nums, int target) {
-        int sum = 0;
-        for (int &i: nums) sum += i;
-        if (sum < target || (sum - target) % 2) return 0;
-        int &&neg = (sum - target) / 2;
-        vector<int> vec1(neg + 1), vec2(neg + 1);
-        vec2[0] = 1;
-        if (nums[0] <= neg) vec2[nums[0]] += 1;
-        vector<int> *pCrt = &vec1, *pPre = &vec2, *temp;
-        for (int i = 1; i < nums.size(); ++i) {
-            for (int j = 0; j <= neg; ++j) {
-                (*pCrt)[j] = (*pPre)[j] + (j - nums[i] < 0 ? 0 : (*pPre)[j - nums[i]]);
+    int findTargetSumWays(vector<int>& nums, int target) {
+        unordered_map<int, int> dp;
+        dp[nums[0]]++;
+        dp[-nums[0]]++;
+        for (int i{1}; i < nums.size(); ++i) {
+            unordered_map<int, int> backup{std::move(dp)};
+            dp.clear();
+            for (auto &[k, v]: backup) {
+                dp[k + nums[i]] += v;
+                dp[k - nums[i]] += v;
             }
-            temp = pPre;
-            pPre = pCrt;
-            pCrt = temp;
         }
-        return (*pPre)[neg];
+        return dp[target];
     }
 };
 
