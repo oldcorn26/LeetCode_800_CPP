@@ -5,18 +5,17 @@ using namespace std;
 
 class Solution {
 public:
-    int removeDuplicates(vector<int> &nums) {
-        int size{static_cast<int>(nums.size())};
-        int slowIdx{0}, fastIdx{1}, countFlag{1};
-        for (; fastIdx < size; ++fastIdx) {
-            if (nums[fastIdx] != nums[slowIdx]) {
-                nums[++slowIdx] = nums[fastIdx];
-                countFlag = 1;
-            } else if (--countFlag >= 0) {
-                nums[++slowIdx] = nums[fastIdx];
+    int removeDuplicates(vector<int>& nums) {
+        int idx{}, sameCnt{1};
+        for (int i{1}; i < nums.size(); ++i) {
+            if (nums[idx] != nums[i]) {
+                nums[++idx] = nums[i];
+                sameCnt = 1;
+            } else if (++sameCnt == 2) {
+                nums[++idx] = nums[i];
             }
         }
-        return slowIdx + 1;
+        return idx + 1;
     }
 };
 
